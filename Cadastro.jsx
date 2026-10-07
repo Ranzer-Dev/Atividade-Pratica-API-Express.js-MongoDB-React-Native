@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import { Alert, View } from 'react-native';
 
 import {
     Appbar,
@@ -9,6 +9,7 @@ import {
 } from 'react-native-paper';
 
 import { styles } from './css/Styles';
+import { useAuth } from './AuthContext';
 
 const Cadastro = ({ navigation }) => {
 
@@ -19,14 +20,27 @@ const Cadastro = ({ navigation }) => {
 
     const [mostrarSenha, setMostrarSenha] = React.useState(false);
     const [mostrarConfirmacao, setMostrarConfirmacao] = React.useState(false);
+    const [enviando, setEnviando] = React.useState(false);
+    const { register } = useAuth();
 
-    const cadastrar = () => {
-
-        console.log('Nome:', nome);
-        console.log('E-mail:', email);
-        console.log('Senha:', senha);
-        console.log('Confirmar senha:', confirmarSenha);
-
+    const cadastrar = async () => {
+        if (!nome.trim() || !email.trim() || !senha) {
+            Alert.alert('Dados obrigatórios', 'Preencha nome, e-mail e senha.');
+            return;
+        }
+        if (senha !== confirmarSenha) {
+            Alert.alert('Senhas diferentes', 'A confirmação deve ser igual à senha.');
+            return;
+        }
+        setEnviando(true);
+        try {
+            await register(nome.trim(), email.trim(), senha);
+            navigation.navigate('Home');
+        } catch (error) {
+            Alert.alert('Não foi possível cadastrar', error.message);
+        } finally {
+            setEnviando(false);
+        }
     };
 
     return (
@@ -162,6 +176,8 @@ const Cadastro = ({ navigation }) => {
                     mode="contained"
                     icon="account-plus"
                     style={styles.cadastroButton}
+                    loading={enviando}
+                    disabled={enviando}
                     onPress={cadastrar}
                 >
                     CADASTRAR

@@ -24,6 +24,17 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-secure-store",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Permitir que o Technologic selecione imagens para o catálogo.",
+          "cameraPermission": false,
+          "microphonePermission": false
+        }
+      ]
+    ]
   }
 }

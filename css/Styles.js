@@ -78,6 +78,12 @@ export const styles = StyleSheet.create({
 
         elevation: 4,
     },
+    cardTitle: {
+        fontWeight: 'bold',
+    },
+    cardCover: {
+        minHeight: 180,
+    },
 // ========= ACESSO  ================
   
 

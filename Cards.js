@@ -1,30 +1,28 @@
-
-import { View, Image } from 'react-native';
-import { Card, Text, Button } from 'react-native-paper';
-
+import { Card, IconButton, Text } from 'react-native-paper';
+import { api } from './api';
 import { styles } from './css/Styles';
 
-const ModCard = () => {
-    return (
-
-        <Card style={styles.card}>
-            <Card.Title title="Breaking Bad" subtitle="1x01 - Pilot"     titleStyle={styles.cardTitle}  />
-            <Card.Cover
-                style={styles.cardCover}
-                source={{
-                    uri: 'https://picsum.photos/700'
-                }}
-            />
-
-            <Card.Actions style={styles.cardActions}>
-
-                <Button onPress={() => console.log('Pressed')}>
-                    ver
-                </Button>
-
+const ModCard = ({ item, isAuthenticated, onEdit, onDelete, onDeleteImage }) => (
+    <Card style={styles.card}>
+        <Card.Title title={item.title} subtitle={item.subtitle || ''} titleStyle={styles.cardTitle} />
+        {item.imageUrl ? (
+            <Card.Cover style={styles.cardCover} source={{ uri: api.imageUrl(item.imageUrl) }} />
+        ) : null}
+        {item.description ? (
+            <Card.Content style={{ paddingTop: 12 }}>
+                <Text>{item.description}</Text>
+            </Card.Content>
+        ) : null}
+        {isAuthenticated ? (
+            <Card.Actions>
+                {item.imageUrl ? (
+                    <IconButton icon="image-remove" accessibilityLabel="Excluir imagem" onPress={onDeleteImage} />
+                ) : null}
+                <IconButton icon="pencil" accessibilityLabel="Editar conteúdo" onPress={onEdit} />
+                <IconButton icon="delete" accessibilityLabel="Excluir conteúdo" onPress={onDelete} />
             </Card.Actions>
+        ) : null}
+    </Card>
+);
 
-        </Card>
-    );
-};
 export default ModCard;

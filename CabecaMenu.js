@@ -1,223 +1,41 @@
-import {useState} from 'react';
-import { View, StyleSheet, Pressable } from 'react-native';
-import { Avatar, Text, IconButton, Portal, Dialog, Button } from 'react-native-paper';
-import { Icon } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
-const CabecalhoMenu = () => {
+import { Alert, View } from 'react-native';
+import { Avatar, Button, Text } from 'react-native-paper';
+import { useAuth } from './AuthContext';
 
-  // Por enquanto os dados estão fixos.
-  // Depois vamos buscar essas informações do usuário que fez login.
-  const usuario = {
-    nome: 'Emerson',
-    email: 'emerson@email.com',
-  };
+export const CabecalhoMenu = ({ navigation }) => {
+    const { user, logout } = useAuth();
+    const navigateTo = (screen) => navigation.navigate('Início', { screen });
 
-  const navigation = useNavigation();
-  const [dialogSair, setDialogSair] = useState(false);
+    const sair = async () => {
+        try {
+            await logout();
+            navigateTo('Home');
+        } catch (error) {
+            Alert.alert('Não foi possível sair', error.message);
+        }
+    };
 
-  const confirmarSaida = () => {
-    setDialogSair(false);
-    //Coloque aqui sua lógica de logout
-    console.log("Usuário saiu");
-    // Exemplo:
-    navigation.navigate("Login");
-  };
-
-
-
-  return (
-
-    <View style={styles.container}>
-
-      {/* Área do usuário */}
-      <View style={styles.usuario}>
-        {/* Avatar */}
-        <Avatar.Icon
-          size={65}
-          icon="account"
-          style={styles.avatar}
-        />
-
-        {/* Nome e e-mail */}
-        <View style={styles.informacoes}>
-
-          <Text
-            variant="titleMedium"
-            style={styles.nome}
-          >
-            {usuario.nome}
-          </Text>
-
-          <Text
-            variant="bodyMedium"
-            style={styles.email}
-            numberOfLines={1}
-          >
-            {usuario.email}
-          </Text>
-
+    return (
+        <View style={{ backgroundColor: '#C0C0C0', padding: 20 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
+                <Avatar.Icon size={54} icon="account" style={{ backgroundColor: '#F2A900' }} />
+                <View style={{ marginLeft: 12, flex: 1 }}>
+                    <Text variant="titleMedium" style={{ color: 'white', fontWeight: 'bold' }}>
+                        {user?.name || 'Visitante'}
+                    </Text>
+                    <Text variant="bodySmall" style={{ color: 'white' }} numberOfLines={1}>
+                        {user?.email || 'Acesso público'}
+                    </Text>
+                </View>
+            </View>
+            {user ? (
+                <>
+                    <Button icon="account" textColor="white" onPress={() => navigateTo('Perfil')}>Meu perfil</Button>
+                    <Button icon="logout" textColor="white" onPress={sair}>Sair</Button>
+                </>
+            ) : (
+                <Button icon="login" textColor="white" onPress={() => navigateTo('Acesso')}>Entrar ou cadastrar</Button>
+            )}
         </View>
-
-      </View>
-
-
-      {/* Área do perfil */}
-      <View style={styles.perfil}>
-        <Text
-          variant="bodyMedium"
-          style={styles.perfilTexto}>
-          Meu perfil
-        </Text>
-        <IconButton
-          icon="account"
-          iconColor="white"
-          size={24}
-          onPress={{}}
-        />
-      </View>
-
-
-      {/* Área do Notificação */}
-      <View style={styles.perfil}>
-        <Text
-          variant="bodyMedium"
-          style={styles.perfilTexto}>
-          Notificação
-        </Text>
-        <IconButton
-          icon="bell"
-          iconColor="white"
-          size={24}
-          onPress={{}}
-        />
-      </View>
-
-      {/* Área do Pesquisa */}
-      <View style={styles.perfil}>
-        <Text
-          variant="bodyMedium"
-          style={styles.perfilTexto}>
-          Pesquisa
-        </Text>
-        <IconButton
-          icon="magnify"
-          iconColor="white"
-          size={24}
-          onPress={() => navigation.navigate('Perfil')}
-        />
-      </View>
-      {/* Área do configuração */}
-      <View style={styles.perfil}  >
-
-        <Text
-          variant="bodyMedium"
-          style={styles.perfilTexto}>
-          Configuração
-        </Text>
-        <IconButton
-          icon="cog"
-          iconColor="white"
-          size={24}
-          onPress={() => navigation.navigate('Perfil')}
-        />
-      </View>
-
-      {/* Área do sair */}
-      <View style={styles.perfil}>
-        <Text
-          variant="bodyMedium"
-          style={styles.perfilTexto}>
-          Sair
-        </Text>
-        <IconButton
-          icon="logout"
-          iconColor="white"
-          size={24}
-          onPress={() => setDialogSair(true)}
-        />
-
-      </View>
-
-
-      {/* Dialog de confirmação */}
-      <Portal>
-        <Dialog
-          visible={dialogSair}
-          onDismiss={() => setDialogSair(false)}>
-          <Dialog.Title>Confirmar saída</Dialog.Title>
-          <Dialog.Content>
-            <Text>
-              Deseja realmente sair do aplicativo?
-            </Text>
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button
-              onPress={() => setDialogSair(false)}>
-              Cancelar
-            </Button>
-
-            <Button
-              onPress={confirmarSaida}   >
-              Sair
-            </Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
-    </View>
-  )
+    );
 };
-
-
-const styles = StyleSheet.create({
-
-  container: {
-    backgroundColor: '#C0C0C0',
-    paddingTop: 25,
-    paddingHorizontal: 20,
-    paddingBottom: 10,
-  },
-
-  usuario: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-
-  avatar: {
-    backgroundColor: '#F2A900',
-  },
-
-  informacoes: {
-    flex: 1,
-    marginLeft: 15,
-  },
-
-  nome: {
-    color: '#FFFFFF',
-    fontWeight: 'bold',
-    fontSize: 19,
-  },
-
-  email: {
-    color: '#FFFFFF',
-    marginTop: 3,
-  },
-
-  perfil: {
-    marginTop: 15,
-    paddingTop: 8,
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255,255,255,0.3)',
-
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-
-  perfilTexto: {
-    color: '#FFFFFF',
-    fontWeight: 'bold',
-  },
-
-});
-
-export { CabecalhoMenu };

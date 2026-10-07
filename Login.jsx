@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import { Alert, View } from 'react-native';
 
 import {
     Appbar,
@@ -9,16 +9,30 @@ import {
 } from 'react-native-paper';
 
 import { styles } from './css/Styles';
+import { useAuth } from './AuthContext';
 
 const Login = ({ navigation }) => {
 
     const [email, setEmail] = React.useState('');
     const [senha, setSenha] = React.useState('');
     const [mostrarSenha, setMostrarSenha] = React.useState(false);
+    const [enviando, setEnviando] = React.useState(false);
+    const { login } = useAuth();
 
-    const entrar = () => {
-        console.log('E-mail:', email);
-        console.log('Senha:', senha);
+    const entrar = async () => {
+        if (!email.trim() || !senha) {
+            Alert.alert('Dados obrigatórios', 'Informe seu e-mail e sua senha.');
+            return;
+        }
+        setEnviando(true);
+        try {
+            await login(email.trim(), senha);
+            navigation.navigate('Home');
+        } catch (error) {
+            Alert.alert('Não foi possível entrar', error.message);
+        } finally {
+            setEnviando(false);
+        }
     };
 
     return (
@@ -109,7 +123,9 @@ const Login = ({ navigation }) => {
                     mode="contained"
                     icon="login"
                     style={styles.loginButton}
-                    onPress={()=>navigation.navigate("Perfil")}
+                    loading={enviando}
+                    disabled={enviando}
+                    onPress={entrar}
                 >
                     ENTRAR
                 </Button>
