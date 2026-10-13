@@ -1,4 +1,4 @@
-# Technologic
+# ContentHub
 
 Aplicativo Expo/React Native com catálogo público, pesquisa, cadastro e login, área administrativa para gerenciar conteúdos e imagens, e API REST Express com MongoDB.
 
