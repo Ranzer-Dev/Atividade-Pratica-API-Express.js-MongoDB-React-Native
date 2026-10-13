@@ -3,15 +3,15 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
 import { PaperProvider } from 'react-native-paper';
-import SplashScreen from './SplashScreen';
-import AppBar from './AppBar';
-import Pesquisa from './Pesquisa';
-import Acesso from './Acesso';
-import Login from './Login';
-import Cadastro from './Cadastro';
-import { Perfil } from './Perfil';
-import { CabecalhoMenu } from './CabecaMenu';
-import { AuthProvider, useAuth } from './AuthContext';
+import SplashScreen from './components/SplashScreen';
+import AppBar from './screens/AppBar';
+import Pesquisa from './screens/Pesquisa';
+import Acesso from './screens/Acesso';
+import Login from './screens/Login';
+import Cadastro from './screens/Cadastro';
+import { Perfil } from './screens/Perfil';
+import { CabecalhoMenu } from './components/CabecaMenu';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { theme } from './theme/theme';
 
 const Stack = createNativeStackNavigator();
@@ -33,14 +33,30 @@ function StackNavigator() {
 function DrawerNavigation() {
     return (
         <Drawer.Navigator
-            screenOptions={{ headerShown: false }}
-            drawerContent={(props) => (
-                <View style={{ flex: 1 }}>
-                    <CabecalhoMenu navigation={props.navigation} />
-                    <DrawerContentScrollView {...props} />
-                </View>
-            )}
-        >
+    screenOptions={{
+        headerShown: false,
+        drawerStyle: {
+            backgroundColor: '#0B0B0F',
+        },
+    }}
+    drawerContent={(props) => (
+        <View style={{ flex: 1, backgroundColor: '#0B0B0F' }}>
+            <CabecalhoMenu navigation={props.navigation} />
+
+            <DrawerContentScrollView
+                {...props}
+                style={{
+                    backgroundColor: '#1f1f27',
+                }}
+                contentContainerStyle={{
+                    backgroundColor: '#1f1f27',
+                    flexGrow: 1,
+                }}
+                showsVerticalScrollIndicator={false}
+            />
+        </View>
+    )}
+>
             <Drawer.Screen name="Início" component={StackNavigator} />
             <Drawer.Screen name="Séries" component={StackNavigator} />
         </Drawer.Navigator>

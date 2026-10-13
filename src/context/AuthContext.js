@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { Alert, Platform } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
-import { api } from './api';
+import { api } from '../services/api';
 
 const AuthContext = createContext(null);
 const SESSION_KEY = 'technologic-session';
