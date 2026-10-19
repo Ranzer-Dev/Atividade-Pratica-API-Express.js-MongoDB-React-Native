@@ -42,14 +42,12 @@ const ModCard = ({
                 {item.title}
             </Text>
 
-            {item.subtitle ? (
-                <Text
-                    style={styles.subtitle}
-                    numberOfLines={1}
-                >
-                    {item.subtitle}
-                </Text>
-            ) : null}
+            <Text
+                style={styles.subtitle}
+                numberOfLines={1}
+            >
+                {item.subtitle || ' '}
+            </Text>
 
         </Card.Content>
 
@@ -125,7 +123,7 @@ const styles = StyleSheet.create({
     },
 
     coverPlaceholder: {
-        height: 210,
+        height: 190,
         alignItems: 'center',
         justifyContent: 'center',
 
@@ -162,6 +160,7 @@ const styles = StyleSheet.create({
         fontSize: 15,
         fontWeight: '700',
 
+        height: 40,
         lineHeight: 20,
     },
 
@@ -171,7 +170,8 @@ const styles = StyleSheet.create({
         fontSize: 11,
         fontWeight: '500',
 
-        marginTop: 4,
+        height: 18,
+        lineHeight: 14,
     },
 
     /* =========================
