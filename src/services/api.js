@@ -43,12 +43,41 @@ export const api = {
     },
     uploadImage(id, asset, token) {
         const form = new FormData();
-        form.append('image', {
-            uri: asset.uri,
-            name: asset.fileName || `image-${Date.now()}.jpg`,
-            type: asset.mimeType || 'image/jpeg',
+        const name = asset.fileName || `image-${Date.now()}.jpg`;
+        if (asset.file) {
+            form.append('image', asset.file, name);
+        } else {
+            form.append('image', {
+                uri: asset.uri,
+                name,
+                type: asset.mimeType || 'image/jpeg',
+            });
+        }
+
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', `${API_URL}/api/content/${id}/image`);
+            if (token) xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+            xhr.onload = () => {
+                let body = null;
+                if (xhr.responseText) {
+                    try {
+                        body = JSON.parse(xhr.responseText);
+                    } catch {
+                        reject(new Error('O servidor retornou uma resposta inválida.'));
+                        return;
+                    }
+                }
+                if (xhr.status < 200 || xhr.status >= 300) {
+                    reject(new Error(body?.message || `Erro na solicitação (${xhr.status}).`));
+                    return;
+                }
+                resolve(body);
+            };
+            xhr.onerror = () => reject(new Error('Não foi possível conectar ao servidor.'));
+            xhr.onabort = () => reject(new Error('O envio da imagem foi cancelado.'));
+            xhr.send(form);
         });
-        return request(`/api/content/${id}/image`, { method: 'POST', body: form, token });
     },
     deleteImage(id, token) {
         return request(`/api/content/${id}/image`, { method: 'DELETE', token });
