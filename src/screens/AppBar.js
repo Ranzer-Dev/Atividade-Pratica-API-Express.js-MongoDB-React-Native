@@ -866,30 +866,36 @@ const AppBar = ({ navigation }) => {
 
                             <View style={styles.cards}>
 
-                                {items.map((item) => (
+                                {items.map((item) => {
+                                    const isOwner = Boolean(
+                                        user &&
+                                        item.createdBy &&
+                                        (item.createdBy === user.id ||
+                                            item.createdBy._id === user.id ||
+                                            String(item.createdBy) === String(user.id))
+                                    );
 
-                                    <View
-                                        key={item._id}
-                                        style={styles.cardWrapper}
-                                    >
-
-                                        <ModCard
-                                            item={item}
-                                            isAuthenticated={true}
-                                            onEdit={() =>
-                                                openEditor(item)
-                                            }
-                                            onDelete={() =>
-                                                deleteItem(item)
-                                            }
-                                            onDeleteImage={() =>
-                                                deleteImage(item)
-                                            }
-                                        />
-
-                                    </View>
-
-                                ))}
+                                    return (
+                                        <View
+                                            key={item._id}
+                                            style={styles.cardWrapper}
+                                        >
+                                            <ModCard
+                                                item={item}
+                                                isAuthenticated={isOwner}
+                                                onEdit={() =>
+                                                    openEditor(item)
+                                                }
+                                                onDelete={() =>
+                                                    deleteItem(item)
+                                                }
+                                                onDeleteImage={() =>
+                                                    deleteImage(item)
+                                                }
+                                            />
+                                        </View>
+                                    );
+                                })}
 
                             </View>
                         )}
